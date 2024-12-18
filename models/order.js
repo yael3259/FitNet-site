@@ -12,17 +12,19 @@ const defaultDate = () => {
 }
 
 
-
 // סכמת מוצר (שדות חובה)
 const minimalProduct = mongoose.Schema({
-    id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
-    name: String,
+    // id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
+    // name: String,
+    name: { type: String, required: true },
     quantity: Number
 });
 
 
 // סכמת הזמנה
 const orderSchema = mongoose.Schema({
+    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'orders' },
+
     orderDate: { type: Date, default: Date.now() },
     targetDate: { type: Date, default: defaultDate },
     address: String,
@@ -32,14 +34,15 @@ const orderSchema = mongoose.Schema({
 });
 
 
+
 // פונקציה שבודקת אם קיימים שדות חסרים בהזמנה
 export const orderValidator = (orderData) => {
     const { targetDate, address, products } = orderData;
     const errors = [];
 
-    if (!targetDate) {
-        errors.push("Target date is required");
-    }
+    // if (!targetDate) {
+    //     errors.push("Target date is required");
+    // }
 
     if (!address) {
         errors.push("Address is required");

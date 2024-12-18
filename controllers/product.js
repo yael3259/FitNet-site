@@ -3,28 +3,32 @@ import { productModel, productValidator } from "../models/product.js";
 import mongoose from "mongoose";
 
 
+
 // הצגת כל המוצרים
 export const getAllProducts = async (req, res, next) => {
     let txt = req.query.txt || undefined;
-    let page = req.query.page || 1;
-    let perPage = req.query.perPage || 30;
+    let page = parseInt(req.query.page) || 1;
+    let perPage = parseInt(req.query.perPage) || 12;
 
     try {
         let query = {};
         if (txt) {
-            query.$or = [{ name: txt }, { description: txt }];
+            query.$or = [
+                { name: { $regex: txt, $options: 'i' } },
+                { description: { $regex: txt, $options: 'i' } }
+            ];
         }
 
-        let allproducts = await productModel.find({
-            $or: [{ name: txt }, { description: txt }]
-        }).skip((page - 1) * perPage).limit(perPage);
+        let allProducts = await productModel.find(query)
+            .skip((page - 1) * perPage)
+            .limit(perPage);
 
-        return res.json(allproducts);
-    }
-    catch (err) {
-        return res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get products" });
+        return res.json(allProducts);
+    } catch (err) {
+        return res.status(400).json({ type: "invalid operation", message: "Sorry, cannot get products" });
     }
 }
+
 
 
 // הצגת מוצר בודד לפי קוד
@@ -80,9 +84,9 @@ export const deleteProduct = async (req, res) => {
 
 // הוספת מוצר חדש
 export const AddProduct = async (req, res) => {
-    let { name, price } = req.body;
+    let { name, price, description, color, startDate, urlImage } = req.body;
 
-    // אם הנתונים המחייבים אינם מופיעים בבקשה, תחזיר שגיאת כשל
+    // אם הנתונים המחייבים אינם מופיעים בבקשה, מחזיר שגיאת כשל
     if (!name || !price) {
         return res.status(400).json({ type: "missing params", message: "missing details in body (name or price)" });
     }
@@ -100,7 +104,15 @@ export const AddProduct = async (req, res) => {
             return res.status(409).json({ type: "same details", message: "there is already such a product" });
         }
 
-        let newproduct = new productModel({ name, price });
+        let newproduct = new productModel({
+            name,
+            price,
+            description: description || "",
+            color,
+            startDate: startDate || Date.now(),
+            urlImage: urlImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7WAcHGVONSN7em4LGqtqKD72ouqgGV-ph_w&s" // ברירת מחדל
+        });
+
         await newproduct.save();
 
         return res.json(newproduct);

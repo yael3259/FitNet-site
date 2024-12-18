@@ -35,7 +35,7 @@ export const addUser = async (req, res) => {
 
 
 
-//כניסת משתמש רשום
+// כניסת משתמש רשום (התחברות)
 export const login = async (req, res) => {
     let { email, password } = req.body;
 

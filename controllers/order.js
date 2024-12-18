@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 
 
 
-
 // הצגת כל ההזמנות
 export const getAllorders = async (req, res, next) => {
     let txt = req.query.txt || undefined;
@@ -22,7 +21,6 @@ export const getAllorders = async (req, res, next) => {
         return res.status(400).json({ type: "invalid operation", massage: "cannot get orders" });
     }
 }
-
 
 
 // הצגת כל ההזמנות של משתמש לפי קוד
@@ -44,7 +42,6 @@ export const getOrderById = async (req, res, next) => {
         return res.status(400).json({ type: "invalid operation", message: "cannot get orders" });
     }
 }
-
 
 
 // מחיקת הזמנה
@@ -79,7 +76,7 @@ export const AddOrder = async (req, res) => {
 
     const errors = orderValidator(req.body).errors;
 
-    if (errors)
+    if (errors.length>0)
         return res.status(404).json(errors.details[0].message);
 
     try {
@@ -93,14 +90,12 @@ export const AddOrder = async (req, res) => {
         await newOrder.save();
 
         return res.json(newOrder)
-
     }
     catch (err) {
         console.log(err)
         return res.status(400).json({ type: "invalid operation", message: "sorry cannot add Order" })
     }
 }
-
 
 
 // עדכון הזמנה לפי קוד
