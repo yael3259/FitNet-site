@@ -14,8 +14,7 @@ const defaultDate = () => {
 
 // סכמת מוצר (שדות חובה)
 const minimalProduct = mongoose.Schema({
-    // id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
-    // name: String,
+    // product_Id: { type: mongoose.Schema.Types.ObjectId, ref: 'products' }, // קשר למודל המוצר
     name: { type: String, required: true },
     quantity: Number
 });
@@ -24,7 +23,6 @@ const minimalProduct = mongoose.Schema({
 // סכמת הזמנה
 const orderSchema = mongoose.Schema({
     orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'orders' },
-
     orderDate: { type: Date, default: Date.now() },
     targetDate: { type: Date, default: defaultDate },
     address: String,
@@ -32,7 +30,6 @@ const orderSchema = mongoose.Schema({
     products: [minimalProduct],
     isSent: { type: Boolean, default: false }
 });
-
 
 
 // פונקציה שבודקת אם קיימים שדות חסרים בהזמנה

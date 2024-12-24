@@ -76,14 +76,19 @@ export const AddOrder = async (req, res) => {
 
     const errors = orderValidator(req.body).errors;
 
-    if (errors.length>0)
+    if (errors.length > 0) {
+        return res.status(400).json({ type: "missing params", message: errors.join(", ") });
+    }
+
+    if (errors.length > 0)
         return res.status(404).json(errors.details[0].message);
 
     try {
         let newOrder = new orderModel({
             targetDate,
             address,
-            userId: req.user._id,
+            userId: req.user ? req.user._id : null,
+            // userId: req.user._id,
             products
         });
 
@@ -93,14 +98,43 @@ export const AddOrder = async (req, res) => {
     }
     catch (err) {
         console.log(err)
-        return res.status(400).json({ type: "invalid operation", message: "sorry cannot add Order" })
+        return res.status(400).json({
+            type: "invalid operation",
+            message: "sorry cannot add Order",
+            error: err.message
+        })
     }
 }
 
 
 // עדכון הזמנה לפי קוד
+// export const UpdateOrder = async (req, res) => {
+//     let { id } = req.params;
+//     if (!mongoose.isValidObjectId(id))
+//         return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
+
+//     try {
+//         let order = await orderModel.findById(id);
+//         if (!order)
+//             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
+
+//         let { isSent } = req.body;
+
+//         order.isSent = true;
+
+//         await order.save();
+//         return res.json(order);
+//     }
+
+//     catch (err) {
+//         console.log(err);
+//         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get order" });
+//     }
+// }
+
 export const UpdateOrder = async (req, res) => {
     let { id } = req.params;
+
     if (!mongoose.isValidObjectId(id))
         return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
 
@@ -109,7 +143,7 @@ export const UpdateOrder = async (req, res) => {
         if (!order)
             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
 
-        let { isSent } = req.body;
+        // let { isSent } = req.body;
 
         order.isSent = true;
 
@@ -122,3 +156,46 @@ export const UpdateOrder = async (req, res) => {
         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get order" });
     }
 }
+
+// export const UpdateOrder = async (req, res) => {
+//     const { id } = req.params;
+
+//     // בדיקת תקינות מזהה
+//     if (!mongoose.isValidObjectId(id)) {
+//         console.log("Invalid ID format:", id);
+//         return res.status(404).json({ 
+//             type: "not valid id", 
+//             message: "ID is in not the right format" 
+//         });
+//     }
+
+//     try {
+//         // חיפוש הזמנה לפי מזהה
+//         const order = await orderModel.findById(id);
+
+//         if (!order) {
+//             console.log("Order not found with ID:", id);
+//             return res.status(404).json({ 
+//                 type: "order is undefined", 
+//                 message: "There is no order with such ID" 
+//             });
+//         }
+
+//         // עדכון שדה isSent
+//         console.log("Order before update:", order);
+//         order.isSent = true;
+
+//         await order.save();
+//         console.log("Order after update:", order);
+
+//         return res.json(order);
+
+//     } catch (err) {
+//         console.error("Error while updating order:", err);
+//         return res.status(400).json({ 
+//             type: "invalid operation", 
+//             message: "Sorry, cannot update order" 
+//         });
+//     }
+// };
+
