@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 export const getAllorders = async (req, res, next) => {
     let txt = req.query.txt || undefined;
     let page = req.query.page || 1;
-    let perPage = req.query.perPage || 30;
+    let perPage = req.query.perPage || 15;
 
     try {
         let allorders = await orderModel.find({})
@@ -68,43 +68,36 @@ export const deleteOrder = async (req, res) => {
 
 // הוספת הזמנה חדשה
 export const AddOrder = async (req, res) => {
-    let { targetDate, address, products } = req.body;
+    const { targetDate, address, products } = req.body;
 
-    // if (!targetDate || !address || !products) {
-    //     return res.status(400).json({ type: "missing params", message: "Missing required fields in body" });
-    // }
-
-    const errors = orderValidator(req.body).errors;
-
-    if (errors.length > 0) {
-        return res.status(400).json({ type: "missing params", message: errors.join(", ") });
+    // Validate request body
+    const validationErrors = orderValidator(req.body)?.errors || [];
+    if (validationErrors.length > 0) {
+        return res.status(400).json({ 
+            type: "validation_error", 
+            message: validationErrors.join(", ") 
+        });
     }
 
-    if (errors.length > 0)
-        return res.status(404).json(errors.details[0].message);
-
     try {
-        let newOrder = new orderModel({
+        const newOrder = new orderModel({
             targetDate,
             address,
-            userId: req.user ? req.user._id : null,
-            // userId: req.user._id,
+            userId: req.user?._id || null,
             products
         });
 
-        await newOrder.save();
-
-        return res.json(newOrder)
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(400).json({
-            type: "invalid operation",
-            message: "sorry cannot add Order",
+        const savedOrder = await newOrder.save();
+        return res.status(201).json(savedOrder);
+    } catch (err) {
+        console.error("Error adding order:", err);
+        return res.status(500).json({
+            type: "server_error",
+            message: "Failed to add order",
             error: err.message
-        })
+        });
     }
-}
+};
 
 
 // עדכון הזמנה לפי קוד
@@ -131,7 +124,6 @@ export const AddOrder = async (req, res) => {
 //         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get order" });
 //     }
 // }
-
 export const UpdateOrder = async (req, res) => {
     let { id } = req.params;
 
@@ -144,7 +136,6 @@ export const UpdateOrder = async (req, res) => {
             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
 
         // let { isSent } = req.body;
-
         order.isSent = true;
 
         await order.save();
