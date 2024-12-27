@@ -68,13 +68,12 @@ export const deleteOrder = async (req, res) => {
 
 // הוספת הזמנה חדשה
 export const AddOrder = async (req, res) => {
-    const { targetDate, address, products } = req.body;
+    const { userId, targetDate, address, products } = req.body;
 
-    // Validate request body
     const validationErrors = orderValidator(req.body)?.errors || [];
     if (validationErrors.length > 0) {
         return res.status(400).json({ 
-            type: "validation_error", 
+            type: "validation_error",
             message: validationErrors.join(", ") 
         });
     }
@@ -154,9 +153,9 @@ export const UpdateOrder = async (req, res) => {
 //     // בדיקת תקינות מזהה
 //     if (!mongoose.isValidObjectId(id)) {
 //         console.log("Invalid ID format:", id);
-//         return res.status(404).json({ 
-//             type: "not valid id", 
-//             message: "ID is in not the right format" 
+//         return res.status(404).json({
+//             type: "not valid id",
+//             message: "ID is in not the right format"
 //         });
 //     }
 
@@ -166,9 +165,9 @@ export const UpdateOrder = async (req, res) => {
 
 //         if (!order) {
 //             console.log("Order not found with ID:", id);
-//             return res.status(404).json({ 
-//                 type: "order is undefined", 
-//                 message: "There is no order with such ID" 
+//             return res.status(404).json({
+//                 type: "order is undefined",
+//                 message: "There is no order with such ID"
 //             });
 //         }
 
@@ -183,9 +182,9 @@ export const UpdateOrder = async (req, res) => {
 
 //     } catch (err) {
 //         console.error("Error while updating order:", err);
-//         return res.status(400).json({ 
-//             type: "invalid operation", 
-//             message: "Sorry, cannot update order" 
+//         return res.status(400).json({
+//             type: "invalid operation",
+//             message: "Sorry, cannot update order"
 //         });
 //     }
 // };

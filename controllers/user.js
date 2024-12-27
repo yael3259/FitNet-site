@@ -5,42 +5,6 @@ import bcrypt from "bcryptjs";
 
 
 // רישום משתמש
-// export const addUser = async (req, res) => {
-//     let { email, password, userName } = req.body;
-
-//     if (!email || !password || !userName)
-//         return res.status(404).json({ type: "missing parameters", message: "enter email, password and userName" })
-
-//     try {
-//         const sameUser = await userModel.findOne({ email: email })
-
-//         if (sameUser)
-//             return res.status(409).json({ type: "same user", message: "user with such email already exist" })
-
-//         // פונקציה לעדכון התפקיד
-//         const ChangingUserStatus = (userName) => {
-//             if (userName.startsWith(process.env.ROLE_CODE)) {
-//                 userName = userName.replace(process.env.ROLE_CODE, '').trim();
-//                 return "ADMIN";
-//             }
-//             return "USER";
-//         };
-
-//         let role = ChangingUserStatus(userName);
-
-//         let hashedPassword = await bcrypt.hash(password, 15);
-//         let newUser = new userModel({ email, password: hashedPassword, userName, role });
-
-//         await newUser.save();
-
-//         let token = generateToken(newUser._id, newUser.role, newUser.userName);
-
-//         return res.json({ userId: newUser._id, userName: newUser.userName, role: newUser.role, token, email: newUser.email });
-//     }
-//     catch (err) {
-//         return res.status(400).json({ type: "invalide operations", message: "cannot add user" })
-//     }
-// }
 export const addUser = async (req, res) => {
     let { email, password, userName } = req.body;
 
@@ -90,7 +54,7 @@ export const login = async (req, res) => {
     let { email, password } = req.body;
 
     if (!email || !password)
-        return res.status(404).json({ type: "missing parameters", message: "enter email, password and userName" })
+        return res.status(404).json({ type: "missing parameters", message: "enter email and password" })
 
     try {
         const user = await userModel.findOne({ email: email })
@@ -102,8 +66,7 @@ export const login = async (req, res) => {
         let token = generateToken(user._id, user.role, user.userName);
         // user.password = "****";
         // return res.json(user);
-        return res.json({ _id: user._id, userName: user.userName, token, email: user.email });
-
+        return res.json({ _id: user._id, userName: user.userName, role: user.role, token, email: user.email });
     }
     catch (err) {
         return res.status(400).json({ type: "invalide operations", message: "cannot sign in user" })
@@ -126,23 +89,45 @@ export const getAllUsers = async (req, res) => {
 
 
 // מחיקת משתמש
+// export const deleteUser = async (req, res) => {
+//     let { userId } = req.params;
+//     console.log("ID received by server:", userId);
+//     try {
+//         if (!mongoose.isValidObjectId(userId)) {
+//             return res.status(400).json({ type: "not valid id", message: "id is not in the right format" });
+//         }
+
+//         let user = await userModel.findById(userId);
+//         console.log("User found:", user);
+//         if (!user) {
+//             return res.status(404).json({ type: "undefined user for delete", message: "this user is undefined for delete" });
+//         }
+
+//         console.log("Attempting to delete user with ID:", userId);
+
+//         user = await userModel.findByIdAndDelete(userId);
+//         console.log("User deleted:", user);
+//         return res.json(user);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(400).json({ type: "invalid operation", message: "sorry cannot delete user" });
+//     }
+// };
+// מחיקת משתמש
 export const deleteUser = async (req, res) => {
-    let { id } = req.params;
-    console.log("ID received by server:", id);
+    let { userId } = req.params;
+
     try {
-        if (!mongoose.isValidObjectId(id))
-            return res.status(400).json({ type: "not valid id", message: "id is not in the right format" });
+        if (!mongoose.isValidObjectId(userId))
+            return res.status(400).json({ type: "not valid id", message: "id is not the right format" });
 
-        let user = await userModel.findById(id);
-        console.log("User found:", user);
-        if (!user) {
+        let user = await userModel.findById(userId);
+
+        if (!user)
             return res.status(404).json({ type: "undefined user for delete", message: "this user is undefined for delete" });
-        }
 
-        console.log("Attempting to delete user with ID:", id);
+        user = await userModel.findByIdAndDelete(userId);
 
-        user = await userModel.findByIdAndDelete(id);
-        console.log("User deleted:", user);
         return res.json(user);
     } catch (err) {
         console.log(err);
@@ -150,53 +135,26 @@ export const deleteUser = async (req, res) => {
     }
 };
 
+// מחיקת מוצר
+export const deleteProduct = async (req, res) => {
+    let { id } = req.params;
 
-// export const deleteUser = async (req, res) => {
-//     const { id } = req.params;
+    try {
+        if (!mongoose.isValidObjectId(id))
+            return res.status(400).json({ type: "not valid id", message: "id is in not the right format" })
 
-//     // לוג עבור ה-ID המתקבל
-//     console.log("ID received by server:", id);
+        let product = await productModel.findById(id);
 
-//     try {
-//         // בדיקת תקינות ה-ID
-//         if (!mongoose.isValidObjectId(id)) {
-//             console.log("Invalid ID format");
-//             return res.status(400).json({
-//                 type: "not valid id",
-//                 message: "ID is not in the correct format"
-//             });
-//         }
+        if (!product)
+            return res.status(404).json({ type: "undifind product for delete", message: "this product is undifind for delete" })
 
-//         // מחיקת המשתמש ישירות
-//         const user = await userModel.findByIdAndDelete(id);
+        product = await productModel.findByIdAndDelete(id);
 
-//         // בדיקה אם המשתמש נמצא ונמחק
-//         if (!user) {
-//             console.log("User not found for deletion:", id);
-//             return res.status(404).json({
-//                 type: "undefined user for delete",
-//                 message: "This user is undefined for deletion"
-//             });
-//         }
+        return res.json(product)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(400).json({ type: "invalid operation", message: "sorry cannot delete product" })
+    }
+}
 
-//         // החזרת המשתמש שנמחק
-//         console.log("User deleted successfully:", user);
-//         return res.json(user);
-
-//     } catch (err) {
-//         // טיפול בשגיאות
-//         if (err.name === 'MongoError') {
-//             console.error("MongoDB error during deletion:", err);
-//             return res.status(500).json({
-//                 type: "db error",
-//                 message: "Database operation failed"
-//             });
-//         }
-
-//         console.error("General error during deletion:", err);
-//         return res.status(400).json({
-//             type: "invalid operation",
-//             message: "Sorry, cannot delete user"
-//         });
-//     }
-// };
