@@ -1,5 +1,6 @@
 import { generateToken, userModel } from "../models/user.js";
 import bcrypt from "bcryptjs";
+import mongoose from 'mongoose';
 
 
 
@@ -89,72 +90,86 @@ export const getAllUsers = async (req, res) => {
 
 
 // מחיקת משתמש
-// export const deleteUser = async (req, res) => {
-//     let { userId } = req.params;
-//     console.log("ID received by server:", userId);
-//     try {
-//         if (!mongoose.isValidObjectId(userId)) {
-//             return res.status(400).json({ type: "not valid id", message: "id is not in the right format" });
-//         }
-
-//         let user = await userModel.findById(userId);
-//         console.log("User found:", user);
-//         if (!user) {
-//             return res.status(404).json({ type: "undefined user for delete", message: "this user is undefined for delete" });
-//         }
-
-//         console.log("Attempting to delete user with ID:", userId);
-
-//         user = await userModel.findByIdAndDelete(userId);
-//         console.log("User deleted:", user);
-//         return res.json(user);
-//     } catch (err) {
-//         console.log(err);
-//         res.status(400).json({ type: "invalid operation", message: "sorry cannot delete user" });
-//     }
-// };
-// מחיקת משתמש
 export const deleteUser = async (req, res) => {
-    let { userId } = req.params;
+    const { userId } = req.params;
+    console.log("deleteUser function called with ID:", userId);
 
     try {
-        if (!mongoose.isValidObjectId(userId))
-            return res.status(400).json({ type: "not valid id", message: "id is not the right format" });
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({ type: "not valid id", message: "ID is not the right format" });
+        }
 
-        let user = await userModel.findById(userId);
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ type: "undefined user for delete", message: "This user is undefined for delete" });
+        }
 
-        if (!user)
-            return res.status(404).json({ type: "undefined user for delete", message: "this user is undefined for delete" });
+        await userModel.findByIdAndDelete(userId);
+        return res.json({ message: "User deleted successfully", user });
 
-        user = await userModel.findByIdAndDelete(userId);
-
-        return res.json(user);
     } catch (err) {
-        console.log(err);
-        res.status(400).json({ type: "invalid operation", message: "sorry cannot delete user" });
+        console.error("Error details:", {
+            message: err.message,
+            stack: err.stack,
+            code: err.code,
+        });
+        return res.status(500).json({ type: "invalid operation", message: err.message });
     }
 };
 
-// מחיקת מוצר
-export const deleteProduct = async (req, res) => {
-    let { id } = req.params;
+
+// התנתקות משתמש
+// export const log_outUser = async (req, res) => {
+//     const { userId } = req.params;
+
+//     try {
+//         if (!mongoose.isValidObjectId(userId)) {
+//             return res.status(400).json({ type: "not valid id", message: "ID is not the right format" });
+//         }
+
+//         const user = await userModel.findById(userId);
+//         if (!user) {
+//             return res.status(404).json({ type: "undefined user for log out", message: "This user is undefined for log out" });
+//         }
+
+//         await userModel.findByIdAndDelete(userId);
+//         return res.json({ message: "User loged out successfully", user });
+
+//     } catch (err) {
+//         console.error("Error details:", {
+//             message: err.message,
+//             stack: err.stack,
+//             code: err.code,
+//         });
+//         return res.status(500).json({ type: "invalid operation", message: err.message });
+//     }
+// }
+
+// פונקציה מעודכנת להתנתקות משתמש (עדכון מצב לדומם)
+export const log_outUser = async (req, res) => {
+    const { userId } = req.params;
 
     try {
-        if (!mongoose.isValidObjectId(id))
-            return res.status(400).json({ type: "not valid id", message: "id is in not the right format" })
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({ type: "not valid id", message: "ID is not the right format" });
+        }
 
-        let product = await productModel.findById(id);
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ type: "undefined user for log out", message: "This user is undefined for log out" });
+        }
 
-        if (!product)
-            return res.status(404).json({ type: "undifind product for delete", message: "this product is undifind for delete" })
+        user.status = "guest";
+        await user.save();
 
-        product = await productModel.findByIdAndDelete(id);
+        return res.json({ message: "User logged out successfully", user });
 
-        return res.json(product)
-    }
-    catch (err) {
-        console.log(err)
-        res.status(400).json({ type: "invalid operation", message: "sorry cannot delete product" })
+    } catch (err) {
+        console.error("Error details:", {
+            message: err.message,
+            stack: err.stack,
+            code: err.code,
+        });
+        return res.status(500).json({ type: "invalid operation", message: err.message });
     }
 }
-

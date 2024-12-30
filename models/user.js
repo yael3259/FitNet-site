@@ -27,21 +27,22 @@ export const userValidator = (_user) => {
 
 
 // פונקציה ליצירת הסיסמה (token)
-// export const generateToken = (_id, role, userName) => {
-//     let token = jwt.sign(
-//         { _id, role, userName },
-//         process.env.SECRET_JWT,
-//         { expiresIn: "1h" });
-//     return token;
-// }
-// ללא הגבלת זמן הגלישה באתר
 export const generateToken = (_id, role, userName) => {
     let token = jwt.sign(
         { _id, role, userName },
-        process.env.SECRET_JWT
-    );
+        process.env.SECRET_JWT,
+        { expiresIn: "5s" }); // הטוקן יפוג אחרי 10 שניות
     return token;
-};
+}
+
+// ללא הגבלת זמן הגלישה באתר
+// export const generateToken = (_id, role, userName) => {
+//     let token = jwt.sign(
+//         { _id, role, userName },
+//         process.env.SECRET_JWT
+//     );
+//     return token;
+// };
 
 
 export const userModel = mongoose.model("users", userSchema);
