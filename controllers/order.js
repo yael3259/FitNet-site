@@ -177,7 +177,8 @@ export const AddOrder = async (req, res) => {
 // }
 
 export const UpdateOrder = async (req, res) => {
-    let { id } = req.params;
+    const { id } = req.params;
+    const isSent = req.body;
 
     if (!mongoose.isValidObjectId(id))
         return res.status(404).json({ type: "invalid id", message: "ID format is invalid." });
@@ -187,13 +188,15 @@ export const UpdateOrder = async (req, res) => {
         if (!order)
             return res.status(404).json({ type: "order not found", message: "No order found with this ID." });
 
-        const { isSent } = req.body;
-        if (typeof isSent !== "boolean")
-            return res.status(400).json({ type: "invalid data", message: "isSent must be a boolean." });
+        // if (typeof isSent !== "boolean")
+        //     return res.status(400).json({ type: "invalid data", message: "isSent must be a boolean." });
 
         order.isSent = isSent;
+
         await order.save();
+
         return res.json(order);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ type: "server error", message: "Failed to update order." });

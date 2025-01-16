@@ -54,7 +54,6 @@
 
 
 
-// server.js
 import express from "express";
 import productRouter from "./routes/product.js";
 import userRouter from "./routes/user.js";

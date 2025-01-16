@@ -11,7 +11,7 @@ const router = express.Router();
 // router.get("/:id", auth, getOrderById);
 // router.delete("/:id", auth, deleteOrder);
 // router.post("/", auth, AddOrder);
-// router.put("/:id", authAdmin, UpdateOrder);
+// router.put("/", authAdmin, UpdateOrder);
 
 
 router.get("/", getAllorders);
@@ -19,7 +19,7 @@ router.get("/:id", getOrderById);
 router.delete("/:id", deleteOrder);
 router.post("/", AddOrder);
 // router.put('/', UpdateOrder);
-router.put('/:id', UpdateOrder);
+router.put('/', UpdateOrder);
 
 
 export default router;

@@ -145,7 +145,7 @@ export const deleteUser = async (req, res) => {
 //     }
 // }
 
-// פונקציה מעודכנת להתנתקות משתמש (עדכון מצב לדומם)
+// התנתקות משתמש
 export const log_outUser = async (req, res) => {
     const { userId } = req.params;
 
@@ -163,6 +163,33 @@ export const log_outUser = async (req, res) => {
         await user.save();
 
         return res.json({ message: "User logged out successfully", user });
+
+    } catch (err) {
+        console.error("Error details:", {
+            message: err.message,
+            stack: err.stack,
+            code: err.code,
+        });
+        return res.status(500).json({ type: "invalid operation", message: err.message });
+    }
+}
+
+
+// שינוי סיסמת משתמש
+export const resetPasswordUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await userModel.findOne({ email: email })
+        if (!user)
+            return res.status(404).json({ type: "user is undifind", message: "one or more ditails are invalide" })
+        console.log("user found!");
+
+        user.password = await bcrypt.hash(password, 15);
+
+        await user.save();
+        console.log("password changed successfully to ", password);
+        res.json({ message: "Password reset successfully" });
 
     } catch (err) {
         console.error("Error details:", {
