@@ -58,20 +58,18 @@ import express from "express";
 import productRouter from "./routes/product.js";
 import userRouter from "./routes/user.js";
 import orderRouter from "./routes/order.js";
-import nodemailer from "nodemailer"; // הוספת ספריית nodemailer לשליחת מיילים
+import nodemailer from "nodemailer";
 import cors from "cors";
 import { config } from "dotenv";
-import { connectToDb } from "./db/connectToDb.js";  // חיבור למסד נתונים
-import { userModel } from "./models/user.js";  // שים לב שאתה מייבא את userModel ולא את userSchema
-import { errorHandling } from "./middlewares/errorHandling.js"; // ללכידת שגיאות
+import { connectToDb } from "./db/connectToDb.js";
+import { userModel } from "./models/user.js";
+import { errorHandling } from "./middlewares/errorHandling.js";
 import dotenv from 'dotenv';
 
 
-
-// אתחול express
 const app = express();
-app.use(express.json());  // פרסר של JSON
-app.use(cors());  // הגדרת הרשאות גישה
+app.use(express.json());
+app.use(cors());
 
 const printDate = (req, res, next) => {
     console.log("A new request in: ", Date.now());
@@ -87,10 +85,8 @@ app.use("/domain/api/user", userRouter);
 app.use("/domain/api/order", orderRouter);
 
 
-
 // פונקציה לשליחת מייל עם קישור לאיפוס סיסמה
 const sendResetPasswordEmail = async (userEmail, resetLink) => {
-    // בדיקת קלטים
     if (!userEmail || !resetLink) {
         throw new Error("User email and reset link must be provided.");
     }
@@ -122,8 +118,8 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
 
     // הגדרות המייל
     const mailOptions = {
-        from: process.env.EMAIL,  // כתובת המייל שלך
-        to: userEmail,  // מייל היעד
+        from: process.env.EMAIL,
+        to: userEmail,
         subject: "Password Reset Request",
         text: `To reset your password, click the following link: ${resetLink}`,
     };
@@ -133,7 +129,6 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
         await transporter.sendMail(mailOptions);
         console.log("Password reset email sent to:", userEmail);
     } catch (error) {
-        // לוג השגיאה במקרה של בעיה בשליחה
         console.error("Error sending email:", error);
         throw new Error("Email sending failed");
     }
@@ -143,12 +138,12 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
 // מסלול לשליחת מייל עם קישור לאיפוס סיסמה
 app.post("/domain/api/user/reset-password", async (req, res) => {
     const { email } = req.body;
-    console.log("Received email:", email);  // בדוק אם ה-email התקבל כראוי
+    console.log("Received email:", email);
 
     try {
         // חיפוש המשתמש במסד הנתונים
         const user = await userModel.findOne({ email });
-        console.log("User found in DB:", user);  // האם המשתמש נמצא במסד נתונים?
+        console.log("User found in DB:", user);
 
         if (!user) {
             console.log("User not found");
@@ -171,23 +166,20 @@ app.post("/domain/api/user/reset-password", async (req, res) => {
             message: "Password reset email sent successfully",
         });
     } catch (err) {
-        console.error("Error processing request:", err);  // זה ייתן לך יותר מידע על השגיאה
+        console.error("Error processing request:", err);
         return res.status(500).json({
             type: "internal server error",
             message: "Failed to process the request",
-            error: err.message, // הוספת השגיאה למענה
+            error: err.message,
         });
     }
 });
 
-// ללכידת שגיאות middle-ware
 app.use(errorHandling);
 
-// הגדרת משתנים סביבתיים
 config();
 connectToDb();
 
-// הגדרת השרת
 let port = process.env.PORT || 3500;
 app.listen(port, () => {
     console.log(`app is listening on port ${port}`);

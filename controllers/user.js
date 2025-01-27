@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 
 // רישום משתמש
 export const addUser = async (req, res) => {
-    let { email, password, userName } = req.body;
+    let { email, password, userName, url } = req.body;
 
     if (!email || !password || !userName)
         return res.status(404).json({ type: "missing parameters", message: "enter email, password and userName" });
@@ -32,22 +32,18 @@ export const addUser = async (req, res) => {
         const { userName: updatedUserName, role } = ChangingUserStatus(userName);
 
         let hashedPassword = await bcrypt.hash(password, 15);
-        let newUser = new userModel({ email, password: hashedPassword, userName: updatedUserName, role });
+        let newUser = new userModel({ email, password: hashedPassword, userName: updatedUserName, role, url });
 
         await newUser.save();
 
-        let token = generateToken(newUser._id, newUser.role, newUser.userName);
+        let token = generateToken(newUser._id, newUser.role, newUser.userName, newUser.url);
 
-        return res.json({ userId: newUser._id, userName: newUser.userName, role: newUser.role, token, email: newUser.email });
+        return res.json({ userId: newUser._id, userName: newUser.userName, role: newUser.role, token, email: newUser.email, url: newUser.url});
     }
     catch (err) {
         return res.status(400).json({ type: "invalid operations", message: "cannot add user" });
     }
 }
-
-
-// let token = generateToken(newUser.userId, newUser.role, newUser.userName);
-// return res.json({ userId: newUser.userId, userName: newUser.userName, token, email: newUser.email });
 
 
 // כניסת משתמש רשום (התחברות)
@@ -67,7 +63,7 @@ export const login = async (req, res) => {
         let token = generateToken(user._id, user.role, user.userName);
         // user.password = "****";
         // return res.json(user);
-        return res.json({ _id: user._id, userName: user.userName, role: user.role, token, email: user.email });
+        return res.json({ _id: user._id, userName: user.userName, role: user.role, token, email: user.email, url: user.url });
     }
     catch (err) {
         return res.status(400).json({ type: "invalide operations", message: "cannot sign in user" })

@@ -86,7 +86,6 @@ export const deleteProduct = async (req, res) => {
 export const AddProduct = async (req, res) => {
     let { name, price, description, color, startDate, urlImage } = req.body;
 
-    // אם הנתונים המחייבים אינם מופיעים בבקשה, מחזיר שגיאת כשל
     if (!name || !price) {
         return res.status(400).json({ type: "missing params", message: "missing details in body (name or price)" });
     }
@@ -122,7 +121,6 @@ export const AddProduct = async (req, res) => {
         res.status(400).json({ type: "invalid operation", message: "sorry, cannot add product" });
     }
 }
-
 
 
 // עדכון מוצר לפי קוד

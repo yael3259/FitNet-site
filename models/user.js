@@ -12,7 +12,8 @@ export const userSchema = mongoose.Schema({
     email: { type: String, unique: true },
     password: String,
     role: { type: String, default: "USER" },
-    enterDate: { type: Date, default: Date.now() }
+    enterDate: { type: Date, default: Date.now() },
+    url: String
 });
 
 
@@ -21,6 +22,7 @@ export const userSchema = mongoose.Schema({
 export const userValidator = (_user) => {
     const userValidationSchema = Joi.object().keys({
         userName: Joi.string().min(3).max(20).required(),
+        url: Joi.string().optional()
     });
     return userValidationSchema.validate(_user);
 }
@@ -31,7 +33,7 @@ export const generateToken = (_id, role, userName) => {
     let token = jwt.sign(
         { _id, role, userName },
         process.env.SECRET_JWT,
-        { expiresIn: "5s" }); // הטוקן יפוג אחרי 10 שניות
+        { expiresIn: "1h" }); // הטוקן יפוג אחרי 10 שניות
     return token;
 }
 
