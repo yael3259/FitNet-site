@@ -100,99 +100,22 @@ export const AddOrder = async (req, res) => {
 
 
 // עדכון הזמנה לפי קוד
-// export const UpdateOrder = async (req, res) => {
-//     let { id } = req.params;
-//     if (!mongoose.isValidObjectId(id))
-//         return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
-
-//     try {
-//         let order = await orderModel.findById(id);
-//         if (!order)
-//             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
-
-//         let { isSent } = req.body;
-
-//         order.isSent = true;
-
-//         await order.save();
-//         return res.json(order);
-//     }
-
-//     catch (err) {
-//         console.log(err);
-//         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get order" });
-//     }
-// }
-// -------------------------------
-// export const UpdateOrder = async (req, res) => {
-//     let { id } = req.params;
-
-//     if (!mongoose.isValidObjectId(id))
-//         return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
-
-//     try {
-//         let order = await orderModel.findById(id);
-//         if (!order)
-//             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
-
-//         // let { isSent } = req.body;
-//         order.isSent = true;
-
-//         await order.save();
-//         return res.json(order);
-//     }
-
-//     catch (err) {
-//         console.log(err);
-//         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get order" });
-//     }
-// }
-
-// export const UpdateOrder = async (req, res) => {
-//     let { id } = req.params;
-
-//     if (!mongoose.isValidObjectId(id))
-//         return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
-
-//     try {
-//         let order = await orderModel.findById(id);
-//         if (!order)
-//             return res.status(404).json({ type: "order is undifind", massage: "there is no order with such id" });
-
-//         let { isSent } = req.body;
-
-//         order.isSent = isSent;
-
-//         // if (isSent == "yes"
-//         // )
-
-//             await order.save();
-//         return res.json(order);
-//     }
-
-//     catch (err) {
-//         console.log(err);
-//         res.status(400).json({ type: "invalid operation", massage: "cannot update order" });
-//     }
-// }
-
 export const UpdateOrder = async (req, res) => {
     const { id } = req.params;
-    const isSent = req.body;
+    const { isSent } = req.body;
 
     if (!mongoose.isValidObjectId(id))
         return res.status(404).json({ type: "invalid id", message: "ID format is invalid." });
+
+    if (typeof isSent !== "boolean")
+        return res.status(400).json({ type: "invalid data", message: "isSent must be a boolean." });
 
     try {
         let order = await orderModel.findById(id);
         if (!order)
             return res.status(404).json({ type: "order not found", message: "No order found with this ID." });
 
-        // if (typeof isSent !== "boolean")
-        //     return res.status(400).json({ type: "invalid data", message: "isSent must be a boolean." });
-
         order.isSent = isSent;
-
         await order.save();
 
         return res.json(order);

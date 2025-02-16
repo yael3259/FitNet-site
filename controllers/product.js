@@ -30,7 +30,6 @@ export const getAllProducts = async (req, res, next) => {
 }
 
 
-
 // הצגת מוצר בודד לפי קוד
 export const getProductById = async (req, res) => {
     let id = req.params.id;
@@ -81,7 +80,6 @@ export const deleteProduct = async (req, res) => {
 }
 
 
-
 // הוספת מוצר חדש
 export const AddProduct = async (req, res) => {
     let { name, price, description, color, startDate, urlImage } = req.body;
@@ -109,7 +107,7 @@ export const AddProduct = async (req, res) => {
             description: description || "",
             color,
             startDate: startDate || Date.now(),
-            urlImage: urlImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7WAcHGVONSN7em4LGqtqKD72ouqgGV-ph_w&s" // ברירת מחדל
+            urlImage: urlImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7WAcHGVONSN7em4LGqtqKD72ouqgGV-ph_w&s"
         });
 
         await newproduct.save();

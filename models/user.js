@@ -33,7 +33,7 @@ export const generateToken = (_id, role, userName) => {
     let token = jwt.sign(
         { _id, role, userName },
         process.env.SECRET_JWT,
-        { expiresIn: "1h" }); // הטוקן יפוג אחרי 10 שניות
+        { expiresIn: "1h" });
     return token;
 }
 

@@ -4,9 +4,6 @@ import mongoose from "mongoose";
 
 
 
-
-// let image="https://www.misgeret.co.il/wht_Images/catalog/subject/image_content_597.jpg.webp";
-
 // סכמת מוצר
 export const productSchema = mongoose.Schema({
 
@@ -18,7 +15,6 @@ export const productSchema = mongoose.Schema({
     quantity: { type: Number, default: 1},
     startDate: { type: Date, default: Date.now() },
     urlImage: { type: String, default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7WAcHGVONSN7em4LGqtqKD72ouqgGV-ph_w&s"},
-    // urlImage: { type: String, default: image },
     localhost: String
 })
 
