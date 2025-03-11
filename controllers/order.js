@@ -1,6 +1,4 @@
-import { request } from "express";
 import { orderModel, orderValidator } from "../models/order.js";
-import { userModel } from "../models/user.js";
 import mongoose from "mongoose";
 
 

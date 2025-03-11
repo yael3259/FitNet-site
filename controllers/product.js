@@ -1,4 +1,3 @@
-import { request } from "express";
 import { productModel, productValidator } from "../models/product.js";
 import mongoose from "mongoose";
 
@@ -87,13 +86,11 @@ export const AddProduct = async (req, res) => {
     if (!name || !price) {
         return res.status(400).json({ type: "missing params", message: "missing details in body (name or price)" });
     }
-
     // const result = await productValidator(req.body);
 
     // if (result.error) {
     //     return res.status(400).json(result.error.details[0]);
     // }
-
     try {
         let sameproduct = await productModel.findOne({ name: name });
 
@@ -146,9 +143,8 @@ export const UpdateProduct = async (req, res) => {
         await product.save();
 
         return res.json(product);
-    }
 
-    catch (err) {
+    } catch (err) {
         console.log(err);
         res.status(400).json({ type: "invalid operation", massage: "sorry, cannot get product" });
     }

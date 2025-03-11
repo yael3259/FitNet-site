@@ -38,7 +38,7 @@ export const addUser = async (req, res) => {
 
         let token = generateToken(newUser._id, newUser.role, newUser.userName, newUser.url);
 
-        return res.json({ userId: newUser._id, userName: newUser.userName, role: newUser.role, token, email: newUser.email, url: newUser.url});
+        return res.json({ userId: newUser._id, userName: newUser.userName, role: newUser.role, token, email: newUser.email, url: newUser.url });
     }
     catch (err) {
         return res.status(400).json({ type: "invalid operations", message: "cannot add user" });
@@ -78,8 +78,8 @@ export const getAllUsers = async (req, res) => {
         let allUsers = await userModel.find({}, '-password');
 
         res.json(allUsers);
-    }
-    catch (err) {
+
+    } catch (err) {
         return res.status(400).json({ type: "invalide operations", message: "cannot sign in user" })
     }
 }
@@ -115,33 +115,6 @@ export const deleteUser = async (req, res) => {
 
 
 // התנתקות משתמש
-// export const log_outUser = async (req, res) => {
-//     const { userId } = req.params;
-
-//     try {
-//         if (!mongoose.isValidObjectId(userId)) {
-//             return res.status(400).json({ type: "not valid id", message: "ID is not the right format" });
-//         }
-
-//         const user = await userModel.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ type: "undefined user for log out", message: "This user is undefined for log out" });
-//         }
-
-//         await userModel.findByIdAndDelete(userId);
-//         return res.json({ message: "User loged out successfully", user });
-
-//     } catch (err) {
-//         console.error("Error details:", {
-//             message: err.message,
-//             stack: err.stack,
-//             code: err.code,
-//         });
-//         return res.status(500).json({ type: "invalid operation", message: err.message });
-//     }
-// }
-
-// התנתקות משתמש
 export const log_outUser = async (req, res) => {
     const { userId } = req.params;
 
@@ -151,6 +124,7 @@ export const log_outUser = async (req, res) => {
         }
 
         const user = await userModel.findById(userId);
+        
         if (!user) {
             return res.status(404).json({ type: "undefined user for log out", message: "This user is undefined for log out" });
         }

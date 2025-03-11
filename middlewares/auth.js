@@ -15,8 +15,8 @@ export const auth = (req, res, next) => {
         let user = jwt.verify(token, process.env.SECRET_JWT);
         req.user = user;
         next();
-    }
-    catch (err) {
+
+    } catch (err) {
         return res.status(401).json({ type: "not registered", message: "invalid token/ token expired" });
     }
 }
