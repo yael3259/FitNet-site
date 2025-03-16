@@ -17,7 +17,7 @@
       "SECRET_JWT": "gjyuhgedfjiy",
       "EMAIL": "yael3259@gmail.com",
       "EMAIL_PASSWORD": "325962694YAEL",
-      "FRONTEND_URL": "http://localhost:3000",
+      "FRONTEND_URL": "https://fitnet-site.vercel.app/",
       "ROLE_CODE": "ADMIN",
       "MONGO_URI": "mongodb+srv://yael3259:b6HXOzMssgmkHh5Z@fitnet.2bc0d.mongodb.net/?retryWrites=true&w=majority&appName=FitNet"
     }
