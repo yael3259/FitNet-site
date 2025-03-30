@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 
 
 
-
 // סכמת משתמש
 export const userSchema = mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },

@@ -123,7 +123,7 @@ export const UpdateProduct = async (req, res) => {
     let { id } = req.params;
 
     if (!mongoose.isValidObjectId(id))
-        return res.status(404).json({ type: "not valid id", massage: "id is in not the right format" });
+        return res.status(400).json({ type: "not valid id", massage: "id is in not the right format" });
 
     try {
         let product = await productModel.findById(id);

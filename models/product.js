@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 
 // סכמת מוצר
 export const productSchema = mongoose.Schema({
-
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
     name: { type: String, unique: true },
     price: Number,

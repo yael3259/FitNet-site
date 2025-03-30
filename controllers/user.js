@@ -135,11 +135,7 @@ export const log_outUser = async (req, res) => {
         return res.json({ message: "User logged out successfully", user });
 
     } catch (err) {
-        console.error("Error details:", {
-            message: err.message,
-            stack: err.stack,
-            code: err.code,
-        });
+        console.error("Error details:", { message: err.message, stack: err.stack, code: err.code });
         return res.status(500).json({ type: "invalid operation", message: err.message });
     }
 }

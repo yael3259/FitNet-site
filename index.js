@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     methods: "POST, GET, PUT, DELETE",
-    origin: process.env.FRONTEND_URL || "*"
+    origin: "*"
 }));
 
 const printDate = (req, res, next) => {
