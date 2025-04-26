@@ -10,7 +10,6 @@ import { connectToDb } from "./db/connectToDb.js";
 import { errorHandling } from "./middlewares/errorHandling.js";
 
 
-dotenv.config();
 
 const app = express();
 // app.use(express.json());
@@ -24,6 +23,12 @@ app.use(cors({
     preflightContinue: true,
     optionsSuccessStatus: 204
 }));
+
+app.get('/', (req, res) => {
+    res.send('server in running!')
+  })
+
+dotenv.config();
 
 
 const printDate = (req, res, next) => {
