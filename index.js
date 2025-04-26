@@ -114,11 +114,14 @@ config();
 
 // הגדרת Middlewares
 app.use(express.json()); // מאפשר עיבוד של בקשות JSON
+
+// הגדרת CORS בצורה רחבה
 app.use(cors({
-    origin: ["https://fitnet-site.vercel.app"], // ניתן לשנות לכל מקור שצריך לגשת
+    origin: "https://fitnet-site.vercel.app", // יוכל להתאים אם צריך לשנות
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'], // חשוב לוודא שהכותרות שהשרת מצפה להם כלולות
     preflightContinue: true,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 200 // מעדיף 200 להצלחה
 }));
 
 // הגדרת נתיב לדף בית
@@ -134,7 +137,7 @@ const printDate = (req, res, next) => {
 
 app.use(printDate); // middleWare למעקב אחרי זמן הבקשות
 
-// ניתובים עיקריים (ניתוב לפי API Endpoints)
+// ניתובים עיקריים (נתיב לארבעת ה-APIs העיקריים)
 app.use("/domain/api/product", productRouter);
 app.use("/domain/api/user", userRouter);
 app.use("/domain/api/order", orderRouter);
@@ -183,7 +186,7 @@ connectToDb();
 // לניהול שגיאות
 app.use(errorHandling);
 
-// טיפול בשגיאות CORS: מאפשר תמיכה ב-OPTIONS (Preflight Requests)
+// טיפול בבקשות OPTIONS
 app.options('*', cors());
 
 // הפעלת השרת
