@@ -16,7 +16,8 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     methods: "POST, GET, PUT, DELETE",
-    origin: "*"
+    // origin: "*"
+    origin: ['https://fitnet-qclc.onrender.com']
 }));
 
 const printDate = (req, res, next) => {
