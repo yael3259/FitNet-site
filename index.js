@@ -13,11 +13,18 @@ import { errorHandling } from "./middlewares/errorHandling.js";
 dotenv.config();
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
+// app.use(cors({
+//     methods: "POST, GET, PUT, DELETE",
+//     origin: "*"
+// }));
 app.use(cors({
-    methods: "POST, GET, PUT, DELETE",
-    origin: "*"
+    origin: ["https://fitnet-site.vercel.app"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    preflightContinue: true,
+    optionsSuccessStatus: 204
 }));
+
 
 const printDate = (req, res, next) => {
     console.log("A new request in: ", new Date().toISOString());
